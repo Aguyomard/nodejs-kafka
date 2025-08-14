@@ -46,5 +46,13 @@ Donc même si ton service frontend: dans docker-compose.yml échoue au build, ç
 
 
 
+🔧 Installation :
+Racine : 
+# Depuis la racine du projet
+cd src && pnpm add chalk
+# OU avec le filtre
+pnpm add --filter backend chalk
+Frontend : pnpm add --filter frontend package
+Backend : pnpm add --filter backend package
 
-docker compose exec app sh -c "cd src && pnpm add uuid @types/uuid"
+
