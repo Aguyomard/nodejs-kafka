@@ -187,3 +187,13 @@ frontend/README.md           # Documentation frontend
 
 
 
+🔧 Installation :
+Racine : 
+# Depuis la racine du projet
+cd src && pnpm add chalk
+# OU avec le filtre
+pnpm add --filter backend chalk
+Frontend : pnpm add --filter frontend package
+Backend : pnpm add --filter backend package
+
+
