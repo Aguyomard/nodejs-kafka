@@ -193,7 +193,12 @@ Racine :
 cd src && pnpm add chalk
 # OU avec le filtre
 pnpm add --filter backend chalk
-Frontend : pnpm add --filter frontend package
+Frontend : pnpm add --filter frontend vue-router@4
 Backend : pnpm add --filter backend package
 
+
+
+curl -X POST http://localhost:3000/order \
+  -H "Content-Type: application/json" \
+  -d '{"cart": {"items": [{"id": 1, "name": "Test Product", "price": 10}]}, "userId": "test-user-123"}'
 

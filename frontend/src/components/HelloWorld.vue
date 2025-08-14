@@ -39,29 +39,29 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted } from 'vue';
 
-const count = ref(0)
-const message = ref('')
-const lastUpdate = ref('')
+const count = ref(0);
+const message = ref('');
+const lastUpdate = ref('');
 
 const increment = () => {
-  count.value++
-  updateTimestamp()
-}
+  count.value++;
+  updateTimestamp();
+};
 
 const decrement = () => {
-  count.value--
-  updateTimestamp()
-}
+  count.value--;
+  updateTimestamp();
+};
 
 const updateTimestamp = () => {
-  lastUpdate.value = new Date().toLocaleTimeString('fr-FR')
-}
+  lastUpdate.value = new Date().toLocaleTimeString('fr-FR');
+};
 
 onMounted(() => {
-  updateTimestamp()
-})
+  updateTimestamp();
+});
 </script>
 
 <style scoped>

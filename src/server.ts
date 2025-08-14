@@ -5,7 +5,8 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
-import { createOrder } from './config/db.js';
+import moment from 'moment';
+import { createOrder, pay, sendEmail, logAnalytics } from './config/db.js';
 
 const app = express();
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
@@ -62,6 +63,57 @@ app.get('/test', async (req, res) => {
       result: 500,
       error: 'Failed to create order',
       message: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+// Nouvel endpoint pour créer une commande complète
+app.post('/order', async (req, res) => {
+  try {
+    const { cart } = req.body;
+    const userId = req.body.userId || 'test-user-123'; // Fallback pour les tests
+
+    console.log('🔄 Processing order...');
+    console.log(' Cart:', cart);
+    console.log('👤 User ID:', userId);
+
+    // Processus complet de commande
+    const paymentResult = await pay(cart, userId);
+    console.log('💳 Payment result:', paymentResult);
+
+    await logAnalytics({ cart, userId }, 'Payment successful');
+    console.log('📊 Analytics logged: Payment successful');
+
+    const orderId = await createOrder(cart, userId);
+    console.log('✅ Order created with ID:', orderId);
+
+    await logAnalytics({ orderId, userId }, 'Order created');
+    console.log('📊 Analytics logged: Order created');
+
+    const emailResult = await sendEmail(orderId, userId, 'test@test.com');
+    console.log('📧 Email result:', emailResult);
+
+    await logAnalytics({ orderId, userId, emailResult }, 'Email sent');
+    console.log('📊 Analytics logged: Email sent');
+
+    const timestamp = moment().format('YYYY-MM-DD HH:mm:ss');
+
+    return res.json({
+      orderId,
+      paymentResult,
+      emailResult,
+      timestamp,
+      message: 'Order processed successfully!',
+    });
+  } catch (error) {
+    console.error('❌ Error processing order:', error);
+
+    const errorTimestamp = moment().format('YYYY-MM-DD HH:mm:ss');
+
+    return res.status(500).json({
+      error: 'Failed to process order',
+      message: error instanceof Error ? error.message : 'Unknown error',
+      timestamp: errorTimestamp,
     });
   }
 });
